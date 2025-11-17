@@ -5,22 +5,20 @@
   <title>Anniversary Album</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html, body { height: 100%; margin: 0; }
+    html, body { height: 100%; margin: 0; padding: 0; overscroll-behavior: none; }
     body {
-      font-family: system-ui, sans-serif;
-      background: #000;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: #000;
       color: #fff;
+      overflow: hidden;
     }
     .app { height: 100%; display: flex; flex-direction: column; }
 
-    /* メニュー */
     .menu {
       padding: 8px;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      justify-content: center;
+      background: rgba(0,0,0,0.7);
+      display: flex; flex-wrap: wrap;
+      gap: 4px; justify-content: center;
     }
     .menu button {
       border: none;
@@ -30,63 +28,74 @@
       background: #ffffff22;
       color: #fff;
       font-size: 13px;
-      transition: background 0.2s, transform 0.1s;
-      white-space: nowrap;
     }
-    .menu button:hover { background: #ffffff55; transform: translateY(-1px); }
-    .menu button.active { background: #ff84c4; color: #000; font-weight: bold; }
+    .menu button.active {
+      background: #ff84c4;
+      color: #000;
+      font-weight: bold;
+    }
 
-    /* メイン表示 */
-    .main { flex: 1; position: relative; overflow: hidden; }
+    .main {
+      flex: 1;
+      position: relative;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
     .bg {
       position: absolute;
       inset: 0;
       background-size: cover;
       background-position: center;
+      background-repeat: no-repeat;
       transition: opacity 0.8s;
     }
     .bg.fade-out { opacity: 0; }
 
     .message-box {
       position: absolute;
-      left: 50%;
-      bottom: 10%;
-      transform: translateX(-50%);
-      max-width: 90%;
-      background: rgba(0,0,0,0.55);
-      padding: 16px 20px;
-      border-radius: 16px;
+      left: 0; right: 0; bottom: 0;
+      padding: 16px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
       text-align: center;
-      backdrop-filter: blur(6px);
     }
-    .message-box h1 { margin: 0 0 8px; font-size: 20px; }
-    .message-box p { margin: 0; white-space: pre-line; font-size: 14px; line-height: 1.6; }
+    .message-box h1 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .message-box p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
   </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- 13か月メニュー -->
+  <!-- ボタン -->
   <div class="menu">
-    <button data-month="2024-11" class="active">2024年11月</button>
-    <button data-month="2024-12">12月</button>
-    <button data-month="2025-01">1月</button>
-    <button data-month="2025-02">2月</button>
-    <button data-month="2025-03">3月</button>
-    <button data-month="2025-04">4月</button>
-    <button data-month="2025-05">5月</button>
-    <button data-month="2025-06">6月</button>
-    <button data-month="2025-07">7月</button>
-    <button data-month="2025-08">8月</button>
-    <button data-month="2025-09">9月</button>
-    <button data-month="2025-10">10月</button>
-    <button data-month="2025-11">2025年11月</button>
+    <button data-key="2024-11" class="active">2024/11</button>
+    <button data-key="2024-12">2024/12</button>
+    <button data-key="2025-01">2025/1</button>
+    <button data-key="2025-02">2025/2</button>
+    <button data-key="2025-03">2025/3</button>
+    <button data-key="2025-04">2025/4</button>
+    <button data-key="2025-05">2025/5</button>
+    <button data-key="2025-06">2025/6</button>
+    <button data-key="2025-07">2025/7</button>
+    <button data-key="2025-08">2025/8</button>
+    <button data-key="2025-09">2025/9</button>
+    <button data-key="2025-10">2025/10</button>
+    <button data-key="2025-11">2025/11</button>
   </div>
 
+  <!-- メイン -->
   <div class="main">
     <div id="bg" class="bg"></div>
     <div class="message-box">
-      <h1 id="monthTitle">2024/11 の思い出</h1>
+      <h1 id="monthTitle"></h1>
       <p id="messageText"></p>
     </div>
   </div>
@@ -94,131 +103,217 @@
 </div>
 
 <script>
-  /* 年月 → 通し番号の対応表 */
-  const monthIndex = {
-    "2024-11": "special-2024-11",
-    "2024-12": 1,
-    "2025-01": 2,
-    "2025-02": 3,
-    "2025-03": 4,
-    "2025-04": 5,
-    "2025-05": 6,
-    "2025-06": 7,
-    "2025-07": 8,
-    "2025-08": 9,
-    "2025-09": 10,
-    "2025-10": 11,
-    "2025-11": "special-2025-11"
-  };
+const albumData = {
 
-  /* 特別ケースのファイル名生成 */
-  function generatePhotoList(key) {
-    const idx = monthIndex[key];
+  "2024-11": {
+    photos: [
+      "images/2024-11_1.jpeg",
+      "images/2024-11_2.jpeg",
+      "images/2024-11_3.jpeg",
+      "images/2024-11_4.jpeg",
+      "images/2024-11_5.jpeg",
+    ],
+    messages: ["2024年11月の思い出",
+    "いつもありがとう",
+    ]
+  },
 
-    if (idx === "special-2024-11") {
-      return [
-        "images/2024-11_1.jpeg",
-        "images/2024-11_2.jpeg",
-        "images/2024-11_3.jpeg",
-        "images/2024-11_4.jpeg",
-        "images/2024-11_5.jpeg",
-      ];
-    }
+  "2024-12": {
+    photos: [
+      "images/12_1.jpeg",
+      "images/12_2.jpeg",
+      "images/12_3.jpeg",
+      "images/12_4.jpeg",
+      "images/12_5.jpeg",
+    ],
+    messages: ["2024年12月の思い出"]
+  },
 
-    if (idx === "special-2025-11") {
-      return [
-        "images/2025-11_1.jpeg",
-        "images/2025-11_2.jpeg",
-        "images/2025-11_3.jpeg",
-        "images/2025-11_4.jpeg",
-        "images/2025-11_5.jpeg",
-      ];
-    }
+  "2025-01": {
+    photos: [
+      "images/1_1.jpeg",
+      "images/1_2.jpeg",
+      "images/1_3.jpeg",
+      "images/1_4.jpeg",
+      "images/1_5.jpeg",
+    ],
+    messages: ["2025年1月の思い出"]
+  },
 
-    // 通常（1_1.jpeg〜10_5.jpeg）
-    const num = idx; // 1〜11
-    return [
-      `images/${num}_1.jpeg`,
-      `images/${num}_2.jpeg`,
-      `images/${num}_3.jpeg`,
-      `images/${num}_4.jpeg`,
-      `images/${num}_5.jpeg`,
-    ];
+  "2025-02": {
+    photos: [
+      "images/2_1.jpeg",
+      "images/2_2.jpeg",
+      "images/2_3.jpeg",
+      "images/2_4.jpeg",
+      "images/2_5.jpeg",
+    ],
+    messages: ["2025年2月の思い出"]
+  },
+
+  "2025-03": {
+    photos: [
+      "images/3_1.jpeg",
+      "images/3_2.jpeg",
+      "images/3_3.jpeg",
+      "images/3_4.jpeg",
+      "images/3_5.jpeg",
+      "images/3_6.jpeg",
+      "images/3_7.jpeg",
+    ],
+    messages: ["2025年3月の思い出"]
+  },
+
+  "2025-04": {
+    photos: [
+      "images/4_1.jpeg",
+      "images/4_2.jpeg",
+      "images/4_3.jpeg",
+      "images/4_4.jpeg",
+      "images/4_5.jpeg",
+    ],
+    messages: ["2025年4月の思い出"]
+  },
+
+  "2025-05": {
+    photos: [
+      "images/5_1.jpeg",
+      "images/5_2.jpeg",
+      "images/5_3.jpeg",
+    ],
+    messages: ["2025年5月の思い出"]
+  },
+
+  "2025-06": {
+    photos: [
+      "images/6_1.jpeg",
+      "images/6_2.jpeg",
+      "images/6_3.jpeg",
+      "images/6_4.jpeg",
+      "images/6_5.jpeg",
+    ],
+    messages: ["2025年6月の思い出"]
+  },
+
+  "2025-07": {
+    photos: [
+      "images/7_1.jpeg",
+      "images/7_2.jpeg",
+      "images/7_3.jpeg",
+      "images/7_4.jpeg",
+    ],
+    messages: ["2025年7月の思い出"]
+  },
+
+  "2025-08": {
+    photos: [
+      "images/8_1.jpeg",
+      "images/8_2.jpeg",
+      "images/8_3.jpeg",
+      "images/8_4.jpeg",
+      "images/8_5.jpeg",
+    ],
+    messages: ["2025年8月の思い出"]
+  },
+
+  "2025-09": {
+    photos: [
+      "images/9_1.jpeg",
+      "images/9_2.jpeg",
+      "images/9_3.jpeg",
+      "images/9_4.jpeg",
+      "images/9_5.jpeg",
+      "images/9_6.jpeg",
+      "images/9_7.jpeg",
+      "images/9_8.jpeg",
+      "images/9_9.jpeg",
+      "images/9_10.jpeg",
+    ],
+    messages: ["2025年9月の思い出"]
+  },
+
+  "2025-10": {
+    photos: [
+      "images/10_1.jpeg",
+      "images/10_2.jpeg",
+      "images/10_3.jpeg",
+      "images/10_4.jpeg",
+      "images/10_5.jpeg",
+    ],
+    messages: ["2025年10月の思い出"]
+  },
+
+  "2025-11": {
+    photos: [
+      "images/2025-11_1.jpeg",
+      "images/2025-11_2.jpeg",
+      "images/2025-11_3.jpeg",
+      "images/2025-11_4.jpeg",
+      "images/2025-11_5.jpeg",
+    ],
+    messages: ["2025年11月の思い出"]
   }
 
-  /* メッセージ ※あなたがあとで書き換える */
-  const messages = {
-    "2024-11": ["2024年11月の思い出を書いてね。"],
-    "2024-12": ["2024年12月の思い出を書いてね。"],
-    "2025-01": ["2025年1月の思い出を書いてね。"],
-    "2025-02": ["2025年2月の思い出を書いてね。"],
-    "2025-03": ["2025年3月の思い出を書いてね。"],
-    "2025-04": ["2025年4月の思い出を書いてね。"],
-    "2025-05": ["2025年5月の思い出を書いてね。"],
-    "2025-06": ["2025年6月の思い出を書いてね。"],
-    "2025-07": ["2025年7月の思い出を書いてね。"],
-    "2025-08": ["2025年8月の思い出を書いてね。"],
-    "2025-09": ["2025年9月の思い出を書いてね。"],
-    "2025-10": ["2025年10月の思い出を書いてね。"],
-    "2025-11": ["2025年11月の思い出を書いてね。"],
-  };
+};
 
-  /* 表示制御 */
-  let currentKey = "2024-11";
-  let photoIndex = 0;
-  let messageIndex = 0;
 
-  const bgEl = document.getElementById("bg");
-  const titleEl = document.getElementById("monthTitle");
-  const messageEl = document.getElementById("messageText");
-  const buttons = document.querySelectorAll(".menu button");
+let currentKey = "2024-11";
+let photoIndex = 0;
+let messageIndex = 0;
 
-  function showMonth(key) {
-    currentKey = key;
-    photoIndex = 0;
-    messageIndex = 0;
+const bgEl = document.getElementById("bg");
+const titleEl = document.getElementById("monthTitle");
+const messageEl = document.getElementById("messageText");
 
-    buttons.forEach(b => b.classList.toggle("active", b.dataset.month === key));
+const buttons = document.querySelectorAll(".menu button");
 
-    const [y, m] = key.split("-");
-    titleEl.textContent = `${y}/${m.replace(/^0/, "")} の思い出`;
+function showMonth(key) {
+  currentKey = key;
+  photoIndex = 0;
+  messageIndex = 0;
 
-    updateSlide(true);
+  buttons.forEach(btn =>
+    btn.classList.toggle("active", btn.dataset.key === key)
+  );
+
+  const [y, m] = key.split("-");
+  titleEl.textContent = `${y}/${m} の思い出`;
+
+  updateSlide(true);
+}
+
+function updateSlide(first = false) {
+  const data = albumData[currentKey];
+  const photos = data.photos;
+  const messages = data.messages;
+
+  if (!first) {
+    bgEl.classList.add("fade-out");
+    setTimeout(() => {
+      bgEl.style.backgroundImage = `url(${photos[photoIndex]})`;
+      bgEl.classList.remove("fade-out");
+    }, 400);
+  } else {
+    bgEl.style.backgroundImage = `url(${photos[photoIndex]})`;
   }
 
-  function updateSlide(first = false) {
-    const list = generatePhotoList(currentKey);
-    const msgList = messages[currentKey];
+  messageEl.textContent = messages[messageIndex] ?? "";
+}
 
-    if (!first) {
-      bgEl.classList.add("fade-out");
-      setTimeout(() => {
-        bgEl.style.backgroundImage = `url(${list[photoIndex]})`;
-        bgEl.classList.remove("fade-out");
-      }, 400);
-    } else {
-      bgEl.style.backgroundImage = `url(${list[photoIndex]})`;
-    }
+function nextSlide() {
+  const data = albumData[currentKey];
+  photoIndex = (photoIndex + 1) % data.photos.length;
+  messageIndex = (messageIndex + 1) % data.messages.length;
+  updateSlide();
+}
 
-    messageEl.textContent = msgList[messageIndex] || "";
-  }
+buttons.forEach(btn =>
+  btn.addEventListener("click", () => showMonth(btn.dataset.key))
+);
 
-  function nextSlide() {
-    const list = generatePhotoList(currentKey);
-    const msgList = messages[currentKey];
+setInterval(nextSlide, 4000);
 
-    photoIndex = (photoIndex + 1) % list.length;
-    messageIndex = (messageIndex + 1) % msgList.length;
-
-    updateSlide();
-  }
-
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => showMonth(btn.dataset.month));
-  });
-
-  setInterval(nextSlide, 4000);
-  showMonth("2024-11");
+showMonth("2024-11");
 </script>
 </body>
 </html>
