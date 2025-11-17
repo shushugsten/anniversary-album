@@ -2,24 +2,18 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>1st Anniversary Album</title>
+  <title>Anniversary Album</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
+    html, body { height: 100%; margin: 0; }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, sans-serif;
       background: #000;
       color: #fff;
     }
-    .app {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
+    .app { height: 100%; display: flex; flex-direction: column; }
 
-    /* 上の月選択メニュー */
+    /* メニュー */
     .menu {
       padding: 8px;
       background: rgba(0, 0, 0, 0.7);
@@ -35,25 +29,15 @@
       cursor: pointer;
       background: #ffffff22;
       color: #fff;
-      font-size: 14px;
+      font-size: 13px;
       transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
     }
-    .menu button:hover {
-      background: #ffffff55;
-      transform: translateY(-1px);
-    }
-    .menu button.active {
-      background: #ff84c4;
-      color: #000;
-      font-weight: bold;
-    }
+    .menu button:hover { background: #ffffff55; transform: translateY(-1px); }
+    .menu button.active { background: #ff84c4; color: #000; font-weight: bold; }
 
-    /* メイン表示部分 */
-    .main {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
+    /* メイン表示 */
+    .main { flex: 1; position: relative; overflow: hidden; }
     .bg {
       position: absolute;
       inset: 0;
@@ -61,14 +45,7 @@
       background-position: center;
       transition: opacity 0.8s;
     }
-    .bg.fade-out {
-      opacity: 0;
-    }
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
-    }
+    .bg.fade-out { opacity: 0; }
 
     .message-box {
       position: absolute;
@@ -76,159 +53,172 @@
       bottom: 10%;
       transform: translateX(-50%);
       max-width: 90%;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0,0,0,0.55);
       padding: 16px 20px;
       border-radius: 16px;
       text-align: center;
       backdrop-filter: blur(6px);
     }
-    .message-box h1 {
-      font-size: 20px;
-      margin: 0 0 8px;
-    }
-    .message-box p {
-      margin: 0;
-      line-height: 1.6;
-      white-space: pre-line; /* \n で改行できるように */
-    }
+    .message-box h1 { margin: 0 0 8px; font-size: 20px; }
+    .message-box p { margin: 0; white-space: pre-line; font-size: 14px; line-height: 1.6; }
   </style>
 </head>
 <body>
 <div class="app">
-  <!-- 月選択メニュー -->
+
+  <!-- 13か月メニュー -->
   <div class="menu">
-    <button data-month="1" class="active">1月</button>
-    <button data-month="2">2月</button>
-    <button data-month="3">3月</button>
-    <button data-month="4">4月</button>
-    <button data-month="5">5月</button>
-    <button data-month="6">6月</button>
-    <button data-month="7">7月</button>
-    <button data-month="8">8月</button>
-    <button data-month="9">9月</button>
-    <button data-month="10">10月</button>
-    <button data-month="11">11月</button>
-    <button data-month="12">12月</button>
+    <button data-month="2024-11" class="active">2024年11月</button>
+    <button data-month="2024-12">12月</button>
+    <button data-month="2025-01">1月</button>
+    <button data-month="2025-02">2月</button>
+    <button data-month="2025-03">3月</button>
+    <button data-month="2025-04">4月</button>
+    <button data-month="2025-05">5月</button>
+    <button data-month="2025-06">6月</button>
+    <button data-month="2025-07">7月</button>
+    <button data-month="2025-08">8月</button>
+    <button data-month="2025-09">9月</button>
+    <button data-month="2025-10">10月</button>
+    <button data-month="2025-11">2025年11月</button>
   </div>
 
-  <!-- 背景＆メッセージ -->
   <div class="main">
     <div id="bg" class="bg"></div>
-    <div class="overlay"></div>
     <div class="message-box">
-      <h1 id="monthTitle">1月の思い出</h1>
+      <h1 id="monthTitle">2024/11 の思い出</h1>
       <p id="messageText"></p>
     </div>
   </div>
+
 </div>
 
 <script>
-  // 月ごとの写真＆メッセージ
-  const albumData = {
-    1: {
-      photos: [
-        "images/01_1.jpg",
-        "images/01_2.jpg",
-        "images/01_3.jpg",
-        "images/01_4.jpg",
-        "images/01_5.jpg"
-      ],
-      messages: [
-        "一緒に初詣に行ったね。\n寒かったけど、手つないで歩いたの覚えてる？",
-        "おみくじ、ふたりとも大吉でびっくりした。笑",
-        "帰りに寄ったカフェ、また行きたいな。",
-      ]
-    },
-    2: {
-      photos: [
-        "images/02_1.jpg",
-        "images/02_2.jpg",
-        "images/02_3.jpg",
-        "images/02_4.jpg",
-        "images/02_5.jpg"
-      ],
-      messages: [
-        "はじめて一緒に作ったバレンタインチョコ。",
-        "キッチン粉まみれ事件、絶対一生忘れない。笑",
-      ]
-    }
-    // 3〜12月も同じ形式で増やす
+  /* 年月 → 通し番号の対応表 */
+  const monthIndex = {
+    "2024-11": "special-2024-11",
+    "2024-12": 1,
+    "2025-01": 2,
+    "2025-02": 3,
+    "2025-03": 4,
+    "2025-04": 5,
+    "2025-05": 6,
+    "2025-06": 7,
+    "2025-07": 8,
+    "2025-08": 9,
+    "2025-09": 10,
+    "2025-10": 11,
+    "2025-11": "special-2025-11"
   };
 
-  let currentMonth = 1;
+  /* 特別ケースのファイル名生成 */
+  function generatePhotoList(key) {
+    const idx = monthIndex[key];
+
+    if (idx === "special-2024-11") {
+      return [
+        "images/2024-11_1.jpeg",
+        "images/2024-11_2.jpeg",
+        "images/2024-11_3.jpeg",
+        "images/2024-11_4.jpeg",
+        "images/2024-11_5.jpeg",
+      ];
+    }
+
+    if (idx === "special-2025-11") {
+      return [
+        "images/2025-11_1.jpeg",
+        "images/2025-11_2.jpeg",
+        "images/2025-11_3.jpeg",
+        "images/2025-11_4.jpeg",
+        "images/2025-11_5.jpeg",
+      ];
+    }
+
+    // 通常（1_1.jpeg〜10_5.jpeg）
+    const num = idx; // 1〜11
+    return [
+      `images/${num}_1.jpeg`,
+      `images/${num}_2.jpeg`,
+      `images/${num}_3.jpeg`,
+      `images/${num}_4.jpeg`,
+      `images/${num}_5.jpeg`,
+    ];
+  }
+
+  /* メッセージ ※あなたがあとで書き換える */
+  const messages = {
+    "2024-11": ["2024年11月の思い出を書いてね。"],
+    "2024-12": ["2024年12月の思い出を書いてね。"],
+    "2025-01": ["2025年1月の思い出を書いてね。"],
+    "2025-02": ["2025年2月の思い出を書いてね。"],
+    "2025-03": ["2025年3月の思い出を書いてね。"],
+    "2025-04": ["2025年4月の思い出を書いてね。"],
+    "2025-05": ["2025年5月の思い出を書いてね。"],
+    "2025-06": ["2025年6月の思い出を書いてね。"],
+    "2025-07": ["2025年7月の思い出を書いてね。"],
+    "2025-08": ["2025年8月の思い出を書いてね。"],
+    "2025-09": ["2025年9月の思い出を書いてね。"],
+    "2025-10": ["2025年10月の思い出を書いてね。"],
+    "2025-11": ["2025年11月の思い出を書いてね。"],
+  };
+
+  /* 表示制御 */
+  let currentKey = "2024-11";
   let photoIndex = 0;
   let messageIndex = 0;
 
   const bgEl = document.getElementById("bg");
   const titleEl = document.getElementById("monthTitle");
   const messageEl = document.getElementById("messageText");
-  const monthButtons = document.querySelectorAll(".menu button");
+  const buttons = document.querySelectorAll(".menu button");
 
-  function setActiveButton(month) {
-    monthButtons.forEach(btn => {
-      btn.classList.toggle("active", Number(btn.dataset.month) === month);
-    });
-  }
-
-  function showMonth(month) {
-    if (!albumData[month]) return;
-
-    currentMonth = month;
+  function showMonth(key) {
+    currentKey = key;
     photoIndex = 0;
     messageIndex = 0;
 
-    setActiveButton(month);
-    titleEl.textContent = month + "月の思い出";
+    buttons.forEach(b => b.classList.toggle("active", b.dataset.month === key));
+
+    const [y, m] = key.split("-");
+    titleEl.textContent = `${y}/${m.replace(/^0/, "")} の思い出`;
+
     updateSlide(true);
   }
 
   function updateSlide(first = false) {
-    const data = albumData[currentMonth];
-    if (!data) return;
+    const list = generatePhotoList(currentKey);
+    const msgList = messages[currentKey];
 
-    const photos = data.photos;
-    const messages = data.messages;
-
-    // 背景フェード用クラス
     if (!first) {
       bgEl.classList.add("fade-out");
       setTimeout(() => {
-        bgEl.style.backgroundImage = `url(${photos[photoIndex]})`;
+        bgEl.style.backgroundImage = `url(${list[photoIndex]})`;
         bgEl.classList.remove("fade-out");
       }, 400);
     } else {
-      bgEl.style.backgroundImage = `url(${photos[photoIndex]})`;
+      bgEl.style.backgroundImage = `url(${list[photoIndex]})`;
     }
 
-    messageEl.textContent = messages[messageIndex] || "";
+    messageEl.textContent = msgList[messageIndex] || "";
   }
 
   function nextSlide() {
-    const data = albumData[currentMonth];
-    if (!data) return;
+    const list = generatePhotoList(currentKey);
+    const msgList = messages[currentKey];
 
-    const photos = data.photos;
-    const messages = data.messages;
-
-    photoIndex = (photoIndex + 1) % photos.length;
-    messageIndex = (messageIndex + 1) % messages.length;
+    photoIndex = (photoIndex + 1) % list.length;
+    messageIndex = (messageIndex + 1) % msgList.length;
 
     updateSlide();
   }
 
-  // 月ボタンクリックで切り替え
-  monthButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const month = Number(btn.dataset.month);
-      showMonth(month);
-    });
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => showMonth(btn.dataset.month));
   });
 
-  // 数秒ごとに背景とメッセージ切り替え
-  setInterval(nextSlide, 4000); // 4秒おき
-
-  // 初期表示
-  showMonth(1);
+  setInterval(nextSlide, 4000);
+  showMonth("2024-11");
 </script>
 </body>
 </html>
