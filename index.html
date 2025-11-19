@@ -14,6 +14,24 @@
     }
     .app { height: 100%; display: flex; flex-direction: column; }
 
+    .title-bar {
+      width: 100%;
+      text-align: center;
+      font-size: 24px;          /* スマホで大きく、PCでは自然に */
+      font-weight: 600;
+      padding: 12px 0 6px;
+      color: #ffb7d5;           /* 優しいピンク → 愛っぽい雰囲気 */
+      letter-spacing: 1px;
+    }
+
+    /* iPhone・スマホサイズ向けに最適化 */
+    @media (max-width: 480px) {
+      .title-bar {
+        font-size: 20px;
+        padding: 10px 0 4px;
+      }
+    }
+
     .menu {
       padding: 8px;
       background: rgba(0,0,0,0.7);
@@ -73,6 +91,8 @@
 </head>
 <body>
 <div class="app">
+
+  <div class="title-bar">1st Anniversary Album</div>
 
   <!-- ボタン -->
   <div class="menu">
