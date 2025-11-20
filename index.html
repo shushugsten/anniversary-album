@@ -6,29 +6,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body { height: 100%; margin: 0; padding: 0; overscroll-behavior: none; }
+    /*
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background-color: #000;
       color: #fff;
       overflow: hidden;
     }
+    */
+    body {
+      font-family: "Zen Maru Gothic", "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #000;
+      color: #fff;
+      overflow: hidden;
+    }
+
     .app { height: 100%; display: flex; flex-direction: column; }
 
     .title-bar {
-      width: 100%;
-      text-align: center;
-      font-size: 24px;          /* スマホで大きく、PCでは自然に */
+      font-family: "Dancing Script", cursive;
+      font-size: 32px;
       font-weight: 600;
-      padding: 12px 0 6px;
-      color: #ffb7d5;           /* 優しいピンク → 愛っぽい雰囲気 */
+      text-align: center;
+      padding: 14px 0 8px;
+      color: #ffb7d5;
       letter-spacing: 1px;
     }
 
-    /* iPhone・スマホサイズ向けに最適化 */
+    /* スマホ最適化 */
     @media (max-width: 480px) {
       .title-bar {
-        font-size: 20px;
-        padding: 10px 0 4px;
+        font-size: 26px;
       }
     }
 
@@ -88,6 +96,12 @@
       white-space: pre-line;
     }
   </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+
+
 </head>
 <body>
 <div class="app">
